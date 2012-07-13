@@ -1,0 +1,12 @@
+{
+    "name": "ql.io-ebay-mp-apis",
+    "version": "0.1.0",
+    "dependencies":{
+        "ql.io-app": "",
+        "ql.io-compiler": "",
+        "mustache": "",
+        "headers": "",
+        "express": "",
+        "ejs": ""
+    }
+}
