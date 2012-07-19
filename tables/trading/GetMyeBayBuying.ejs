@@ -1,0 +1,209 @@
+
+<%
+var TAGNAME = 0
+var CONTENT = 1
+var ATTRS = 2
+var ANCESTORS = 3
+//check if an associative array is empty
+function isaaEmpty(aa){
+    for (key in aa)
+        return false
+    return true
+}
+
+//attrs is an associative array that holds attributes key-value pairs
+function openTag(tagName, attrs){%>
+    <<%= tagName %>
+    <%for (attrKey in attrs){%>
+        <%= attrKey %> = <%= attrs[attrKey] %>
+    <%}%>
+    >
+<%}
+
+function closeTag(tagName){%>
+    </<%=tagName%>>
+<%}
+
+function insert(value){%>
+    <%= value %>
+<%}
+
+function printAncestors(ancestorTags){
+    if (! (ancestorTags instanceof Array))
+        return
+    for (var i = 0; i < ancestorTags.length; i++)
+        openTag(ancestorTags[i])
+}
+
+
+
+function tagNode(tagName, value, attrs){
+var tmp =
+{
+'tagName' : tagName,
+'attrs' : attrs,
+'isEmpty' : false,
+'print' : function(){
+    if(this.isEmpty)
+        return
+    for (var i = 0; i < this.value.length; i++){%>
+        <<%=tagName%>><%= this.value[i] %></<%=tagName%>>
+    <%}
+}
+}
+//take either one or array of values
+if (value instanceof Array)
+    tmp.value = value
+else{
+    tmp.value = [value]
+    if (value == null)
+        tmp.isEmpty = true
+}
+
+return tmp
+}
+
+function printTagNode(tagName, value, attrs){
+    var tmp = tagNode(tagName, value, attrs)
+    tmp.print()
+}
+
+function tagTree(tagName, children, attrs){
+var tmp = {
+'tagName' : tagName,
+'attrs' : attrs,
+'print' : function(){
+    if(this.isEmpty)
+        return
+    for(var childIdx = 0; childIdx < this.children.length; childIdx++){
+        openTag(this.tagName)
+
+        var child = this.children[childIdx]
+        for (var childTag =0; childTag <child.length; childTag++){
+            child[childTag].print()
+        }
+        closeTag(this.tagName)
+    }
+}
+}
+if (!(children[0] instanceof Array))
+    tmp.children = [children]
+else
+    tmp.children = children
+tmp.isEmpty = true
+for (var childIdx = 0; childIdx < tmp.children.length; childIdx++){
+    var child = tmp.children[childIdx]
+    for (var childTag =0; childTag <child.length; childTag++){
+        if (!(child[childTag].isEmpty)){
+            tmp.isEmpty = false
+            break
+        }
+    }if(!tmp.isEmpty)
+        break
+}
+return tmp
+}
+
+function printTagTree(tagName, children, attrs){
+    var tmp = tagTree(tagName, children, attrs)
+    tmp.print()
+}
+%>
+
+<?xml version="1.0" encoding="utf-8"?>
+<GetMyeBayBuyingRequest xmlns="urn:ebay:apis:eBLBaseComponents"><%
+    printTagTree('RequesterCredentials', [tagNode('eBayAuthToken', params['RequesterCredentials.eBayAuthToken'])])
+    printTagNode('DetailLevel', params.DetailLevel)
+    printTagNode('ErrorLanguage', params.ErrorLanguage)
+    printTagNode('MessageID', params.MessageID)
+    printTagNode('OutputSelector', params.OutputSelector)
+    printTagNode('Version', params.Version)
+    printTagNode('WarningLevel', params.WarningLevel)
+    printTagTree('BestOfferList', [
+        tagNode('DurationInDays', params['BestOfferList.DurationInDays']), 
+        tagNode('Include', params['BestOfferList.Include']), 
+        tagNode('IncludeNotes', params['BestOfferList.IncludeNotes']), 
+        tagNode('ListingType', params['BestOfferList.ListingType']),
+        tagTree('Pagination', [
+            tagNode('EntriesPerPage', params['BestOfferList.Pagination.EntriesPerPage']), 
+            tagNode('PageNumber', params['BestOfferList.Pagination.PageNumber'])]), 
+        tagNode('Sort', params['BestOfferList.Sort'])])
+    printTagTree('BidAssistantList', [
+        tagNode('BidGroupID', params['BidAssistantList.BidGroupID']), 
+        tagNode('IncludeNotes', params['BidAssistantList.IncludeNotes'])])
+    printTagTree('BidList', [
+        tagNode('Include', params['BidList.Include']), 
+        tagNode('IncludeNotes', params['BidList.IncludeNotes']),
+        tagTree('Pagination', [
+            tagNode('EntriesPerPage', params['BidList.Pagination.EntriesPerPage']), 
+            tagNode('PageNumber', params['BidList.Pagination.PageNumber'])]), 
+        tagNode('Sort', params['BidList.Sort'])])
+    printTagTree('BuyingSummary', [
+        tagNode('Include', params['BuyingSummary.Include'])])
+    printTagTree('DeletedFromLostList', [
+        tagNode('DurationInDays', params['DeletedFromLostList.DurationInDays']), 
+        tagNode('Include', params['DeletedFromLostList.Include']), 
+        tagNode('IncludeNotes', params['DeletedFromLostList.IncludeNotes']),
+        tagTree('Pagination', [
+            tagNode('EntriesPerPage', params['DeletedFromLostList.Pagination.EntriesPerPage']), 
+            tagNode('PageNumber', params['DeletedFromLostList.Pagination.PageNumber'])]), 
+        tagNode('Sort', params['DeletedFromLostList.Sort'])])
+    printTagTree('DeletedFromWonList', [
+        tagNode('DurationInDays', params['DeletedFromWonList.DurationInDays']), 
+        tagNode('Include', params['DeletedFromWonList.Include']), 
+        tagNode('IncludeNotes', params['DeletedFromWonList.IncludeNotes']),
+        tagTree('Pagination', [
+            tagNode('EntriesPerPage', params['DeletedFromWonList.Pagination.EntriesPerPage']), 
+            tagNode('PageNumber', params['DeletedFromWonList.Pagination.PageNumber'])]), 
+        tagNode('Sort', params['DeletedFromWonList.Sort'])])
+    printTagTree('FavoriteSearches', [
+        tagNode('Include', params['FavoriteSearches.Include']), 
+        tagNode('IncludeFavoriteSellerCount', params['FavoriteSearches.IncludeFavoriteSellerCount']), 
+        tagNode('IncludeItemCount', params['FavoriteSearches.IncludeItemCount']), 
+        tagNode('MaxResults', params['FavoriteSearches.MaxResults']), 
+        tagNode('Sort', params['FavoriteSearches.Sort'])])
+    printTagTree('FavoriteSellers', [
+        tagNode('Include', params['FavoriteSellers.Include']), 
+        tagNode('IncludeFavoriteSellerCount', params['FavoriteSellers.IncludeFavoriteSellerCount']), 
+        tagNode('IncludeItemCount', params['FavoriteSellers.IncludeItemCount']), 
+        tagNode('MaxResults', params['FavoriteSellers.MaxResults']), 
+        tagNode('Sort', params['FavoriteSellers.Sort'])])
+    printTagNode('HideVariations', params.HideVariations)
+    printTagTree('LostList', [
+        tagNode('DurationInDays', params['LostList.DurationInDays']), 
+        tagNode('Include', params['LostList.Include']), 
+        tagNode('IncludeNotes', params['LostList.IncludeNotes']),
+        tagTree('Pagination', [
+            tagNode('EntriesPerPage', params['LostList.Pagination.EntriesPerPage']), 
+            tagNode('PageNumber', params['LostList.Pagination.PageNumber'])]), 
+        tagNode('Sort', params['LostList.Sort'])])
+    printTagTree('SecondChanceOffer', [
+        tagNode('Include', params['SecondChanceOffer.Include']), 
+        tagNode('IncludeFavoriteSellerCount', params['SecondChanceOffer.IncludeFavoriteSellerCount']), 
+        tagNode('IncludeItemCount', params['SecondChanceOffer.IncludeItemCount']), 
+        tagNode('MaxResults', params['SecondChanceOffer.MaxResults']), 
+        tagNode('Sort', params['SecondChanceOffer.Sort'])])
+    printTagTree('UserDefinedLists', [
+        tagNode('Include', params['UserDefinedLists.Include']), 
+        tagNode('IncludeFavoriteSellerCount', params['UserDefinedLists.IncludeFavoriteSellerCount']), 
+        tagNode('IncludeItemCount', params['UserDefinedLists.IncludeItemCount']), 
+        tagNode('IncludeListContents', params['UserDefinedLists.IncludeListContents']), 
+        tagNode('MaxResults', params['UserDefinedLists.MaxResults']), 
+        tagNode('Sort', params['UserDefinedLists.Sort']), 
+        tagNode('UserDefinedListName', params['UserDefinedLists.UserDefinedListName'])])
+    printTagTree('WatchList', [
+        tagNode('Include', params['WatchList.Include']), 
+        tagNode('IncludeNotes', params['WatchList.IncludeNotes']),
+        tagTree('Pagination', [
+            tagNode('EntriesPerPage', params['WatchList.Pagination.EntriesPerPage']), 
+            tagNode('PageNumber', params['WatchList.Pagination.PageNumber'])]), 
+        tagNode('Sort', params['WatchList.Sort'])])
+    printTagTree('WonList', [
+        tagNode('DurationInDays', params['WonList.DurationInDays']), 
+        tagNode('Include', params['WonList.Include']), 
+        tagNode('IncludeNotes', params['WonList.IncludeNotes']),
+        tagTree('Pagination', [
+            tagNode('EntriesPerPage', params['WonList.Pagination.EntriesPerPage']), 
+            tagNode('PageNumber', params['WonList.Pagination.PageNumber'])]), 
+        tagNode('Sort', params['WonList.Sort'])])
+%></GetMyeBayBuyingRequest>

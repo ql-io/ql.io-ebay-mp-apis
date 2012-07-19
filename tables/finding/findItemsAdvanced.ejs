@@ -1,0 +1,108 @@
+<%
+TAGNAME = 0
+CONTENT = 1
+ATTRS = 2
+ANCESTORS = 3
+//check if an associative array is empty
+function isaaEmpty(aa){
+    for (key in aa)
+        return false
+    return true
+}
+
+//attrs is an associative array that holds attributes key-value pairs
+function openTag(tagName, attrs){%>
+    <<%= tagName %>
+    <%for (attrKey in attrs){%>
+        <%= attrKey %> = <%= attrs[attrKey] %>
+    <%}%>
+    >
+<%}
+
+function closeTag(tagName){%>
+    </<%= tagName %>>
+<%}
+
+function insert(value){%>
+    <%= value %>
+<%}
+
+function printAncestors(ancestorTags){
+    if (! (ancestorTags instanceof Array))
+        return
+    for (var i = 0; i < ancestorTags.length; i++)
+        openTag(ancestorTags[i])
+}
+
+function tagNode(tagName, value, attrs,ancestorTags){
+   if (value == null && isaaEmpty(attrs))
+       return false
+   printAncestors(ancestorTags)
+   openTag(tagName, attrs)
+   insert(value)
+   closeTag(tagName)
+   return true
+}
+
+function tagTree(tagName, children, attrs, ancestorTags){
+    var isEmpty = isaaEmpty(attrs)
+    if(!isEmpty){
+        printAncestors(ancestorTags)
+        openTag(tagName, attrs)
+        ancestorTags = null
+    }else{
+        if (ancestorTags instanceof Array){
+            ancestorTags.push(tagName)
+        }else{
+            ancestorTags = [tagName]
+        }
+    }
+    for (var i=0; i< children.length; i++){
+        child = children[i]
+        if (child[CONTENT] instanceof Array){
+            //tree
+            //TAGNAME = 0
+            //CONTENT = 1
+            //ATTRS = 2
+            //ANCESTORS = 3
+            var hasContent = tagTree(child[TAGNAME], child[CONTENT], child[ATTRS], ancestorTags)
+            if (isEmpty && hasContent){
+                isEmpty = false
+                ancestorTags = null
+            }
+        }else{
+            //node
+            var hasContent = tagNode(child[TAGNAME], child[CONTENT], child[ATTRS], ancestorTags)
+            if (isEmpty && hasContent){
+                isEmpty = false
+                ancestorTags = null
+            }
+        }
+    }if (!isEmpty){
+        closeTag(tagName)
+        return true
+    }return false
+}
+%>
+
+<findItemsAdvancedRequest xmlns="http://www.ebay.com/marketplace/search/v1/services"><%
+    tagTree('affiliate',[['customId', params['affiliate.customId']],
+                         ['geoTargeting', params['affiliate.geoTargeting']],
+                         ['networkId', params['affiliate.networkId']],
+                         ['trackingId', params['affiliate.trackingId']]])
+    tagNode('buyerPostalCode', params.buyerPostalCode)
+    tagTree('paginationInput', [['entriesPerPage', params['paginationInput.entriesPerPage']],
+                                ['pageNumber', params['paginationInput.pageNumber']]])
+    tagNode('sortOrder', params.sortOrder)
+    tagTree('aspectFilter', [['aspectName', params['aspectFilter.aspectName']],
+                             ['aspectValue', params['aspectFilter.aspectValue']]])
+    tagNode('categoryId', params.categoryId)
+    tagNode('descriptionSearch', params.descriptionSearch)
+    tagTree('domainFilter', [['domainName', params['domainFilter.domainName']]])
+    tagTree('affiliate',[['customId', params['affiliate.customId']],
+                         ['geoTargeting', params['affiliate.geoTargeting']],
+                         ['networkId', params['affiliate.networkId']],
+                         ['trackingId', params['affiliate.trackingId']]])
+    tagNode('keywords', params.keywords)
+    tagNode('outputSelector', params.outputSelector)
+%></findItemsAdvancedRequest>

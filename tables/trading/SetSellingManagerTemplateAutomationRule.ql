@@ -1,0 +1,13 @@
+-- Revises or adds to the Selling Manager automation rules associated with a specific template.
+-- Example : insert into ebay.trading.SetSellingManagerTemplateAutomationRule values (YOUR XML HERE)
+create table ebay.trading.SetSellingManagerTemplateAutomationRule
+    on insert post to "{config.tables.ebay.trading.gateway}"
+    using headers 'X-EBAY-API-COMPATIBILITY-LEVEL' = '{config.tables.ebay.trading.version}',
+    'X-EBAY-API-SITEID' = '{config.tables.ebay.trading.siteid}',
+    'X-EBAY-API-CALL-NAME'= 'SetSellingManagerTemplateAutomationRule',
+    'X-EBAY-API-APP-NAME' = '{config.tables.ebay.trading.appname}',
+    'X-EBAY-API-DEV-NAME' = '{config.tables.ebay.trading.devname}',
+    'X-EBAY-API-CERT-NAME' = '{config.tables.ebay.trading.certname}'
+    using defaults RequesterCredentials.eBayAuthToken = '{config.tables.ebay.trading.eBayAuthToken}'
+    using bodyTemplate 'SetSellingManagerTemplateAutomationRule.ejs' type 'application/xml'
+    resultset 'SetSellingManagerTemplateAutomationRuleResponse'

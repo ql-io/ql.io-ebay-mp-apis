@@ -1,6 +1,27 @@
 {
-    "eBay" : {
-        "apikey": "Qlio1a92e-fea5-485d-bcdb-1140ee96527"
+    "tables":
+    {
+        "ebay": {
+            "finding" : {
+                "gateway": "http://svcs.ebay.com/services/search/FindingService/v1",
+                "appname": "YOUR APP NAME HERE"
+            },
+            "shopping" :
+            {   "gateway": "http://open.api.ebay.com/shopping?",
+                "appid": "YOUR APP ID HERE",
+                "requestencoding" : "XML",
+                "version" : 765
+            },
+	        "trading":
+	        {
+            "siteid" : "0",
+            "version" : "737",
+            "appname" : "YOUR APP NAME HERE",
+            "devname" : "YOUR DEV NAME HERE",
+            "certname" : "YOUR CERT NAME HERE",
+            "gateway" : "https://api.ebay.com/ws/api.dll?",
+            "eBayAuthToken": "YOUR AUTHTOKEN HERE"
+            }
+	    }
     }
 }
-

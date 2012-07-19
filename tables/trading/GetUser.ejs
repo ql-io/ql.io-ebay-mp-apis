@@ -1,0 +1,17 @@
+<%function tryInsert(k,value){if(value){%>
+<<%=k%>>=value%></<%=k%>>
+<%}}%>
+<?xml version="1.0" encoding="utf-8"?>
+<GetUserRequest xmlns="urn:ebay:apis:eBLBaseComponents">
+    <%tryInsert('DetailLevel', params.DetailLevel)
+    tryInsert('ErrorLanguage', params.ErrorLanguage)
+    tryInsert('MessageID', params.MessageID)
+    tryInsert('WarningLevel', params.WarningLevel)
+    tryInsert('IncludeExpressRequirements', params.IncludeExpressRequirements)
+    tryInsert('IncludeFeatureEligibility', params.IncludeFeatureEligibility)
+    tryInsert('ItemID', params.ItemID)
+    tryInsert('UserID', params.UserID)%>
+    <RequesterCredentials>
+    <%tryInsert('eBayAuthToken', params.eBayAuthToken)%>
+    </RequesterCredentials>
+</GetUserRequest>
