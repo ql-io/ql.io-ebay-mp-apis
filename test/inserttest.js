@@ -39,57 +39,6 @@ var engine = new Engine({
 
 
 module.exports = {
-    /*'upload files': function(test) {
-        var c = new Console({
-            tables : __dirname + '/tables',
-            routes : __dirname + '/routes/',
-            config : __dirname + '/config/dev.json',
-            'enable console' : false,
-            connection : 'close'
-        });
-        c.app.listen(3000, function() {
-            var testHttpapp = express.createServer();
-            testHttpapp.post('/ebay/trading/uploadpic?pic=http://developer.ebay.com/DevZone/XML/docs/images/hp_book_image.jpg', function(req, res) {
-                var data = '';
-                req.on('data', function(chunk) {
-                    data += chunk;
-                });
-                req.on('end', function() {
-                    res.send(data);
-                });
-            });
-
-            testHttpapp.listen(80126, function() {
-                var options = {
-                    host : 'localhost',
-                    port : 3000,
-                    path : '/ebay/trading/uploadpic?pic=http://developer.ebay.com/DevZone/XML/docs/images/hp_book_image.jpg',
-                    //path: '/ping/pong',
-                    method : 'POST',
-                    headers : {
-                        'content-type' : 'application/json'
-                    }
-                };
-                var req = http.request(options);
-                req.addListener('response', function(resp) {
-                    var data = '';
-                    resp.addListener('data', function(chunk) {
-                        data += chunk;
-                    });
-                    resp.addListener('end', function() {
-                        test.deepEqual(JSON.parse(data), {"val" : {"postPayload" : {"ItemID" : "1818", "UserID" : "someone"}}});
-                        c.app.close();
-                        testHttpapp.close();
-                        test.done();
-                    });
-                });
-                req.write('{"itemId":1818,"userId":"someone"}');
-                req.end();
-
-            });
-        });
-    },      */
-
     'simple': function (test){
         var q = 'foo = \'wii\';\nreturn select * from ebay.finding.findItemsByKeywords where keywords = "{foo}"'
         engine.exec(q, function (err, list) {
