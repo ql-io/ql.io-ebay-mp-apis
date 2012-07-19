@@ -9,6 +9,8 @@ After you get these values, you can start using the tables.
 
 To start the server run "bin/start.sh".
 
+The test directory has examples of the scripts that use the different apis.
+
 For documentation regarding the api, please refer https://www.x.com/developers/ebay
 
 For more information regarding ql.io please refer http://ql.io/
