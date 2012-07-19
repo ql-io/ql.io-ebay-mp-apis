@@ -1,0 +1,36 @@
+<%function tryInsert(k,value){if(value){%>
+<<%=k%>><%=value%></<%=k%>>
+<%}}
+function tryGroup(gname, dict){
+    var allempty = true
+    for (var k in dict){
+        if(allempty){
+            if(dict[k]){
+                allempty = false%>
+                <<%=gname%>>
+            <%}
+        }tryInsert(k,dict[k])
+    }
+    if(!allempty){%>
+        </<%=gname%>>
+<%}}%>
+
+<findItemsByImageRequest xmlns="http://www.ebay.com/marketplace/search/v1/services">
+    <%tryGroup('affiliate',{'customId':params['affiliate.customId'],
+                            'geoTargeting':params['affiliate.geoTargeting'],
+                            'networkId':params['affiliate.networkId'],
+                            'trackingId':params['affiliate.trackingId']})%>
+    <%tryInsert('buyerPostalCode', params.buyerPostalCode)%>
+    <%tryGroup('paginationInput', {'entriesPerPage':params['paginationInput.entriesPerPage'],
+                                   'pageNumber':params['paginationInput.pageNumber']})%>
+    <%tryGroup('aspectFilter',{'aspectName':params['aspectFilter.aspectName'],
+                               'aspectValueName':params['aspectFilter.aspectValueName']})%>
+    <%tryInsert('categoryId',params.categoryId)%>
+    <%tryGroup('domainFilter', {'domainName':params['domainFilter.domainName']})%>
+    <%tryGroup('itemFilter',{'name':params['itemFilter.name'],
+                             'paramName':params['itemFilter.paramName'],
+                             'paramValue':params['itemFilter.paramValue'],
+                             'value':params['itemFilter.value']})%>
+    <%tryInsert('itemId',params.itemId)%>
+    <%tryInsert('outputSelector',params.outputSelector)%>
+</findItemsByImageRequest>

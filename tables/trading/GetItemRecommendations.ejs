@@ -1,0 +1,296 @@
+
+<%
+var TAGNAME = 0
+var CONTENT = 1
+var ATTRS = 2
+var ANCESTORS = 3
+//check if an associative array is empty
+function isaaEmpty(aa){
+    for (key in aa)
+        return false
+    return true
+}
+
+//attrs is an associative array that holds attributes key-value pairs
+function openTag(tagName, attrs){%>
+    <<%= tagName %>
+    <%for (attrKey in attrs){%>
+        <%= attrKey %> = <%= attrs[attrKey] %>
+    <%}%>
+    >
+<%}
+
+function closeTag(tagName){%>
+    </<%=tagName%>>
+<%}
+
+function insert(value){%>
+    <%= value %>
+<%}
+
+function printAncestors(ancestorTags){
+    if (! (ancestorTags instanceof Array))
+        return
+    for (var i = 0; i < ancestorTags.length; i++)
+        openTag(ancestorTags[i])
+}
+
+
+
+function tagNode(tagName, value, attrs){
+var tmp =
+{
+'tagName' : tagName,
+'attrs' : attrs,
+'isEmpty' : false,
+'print' : function(){
+    if(this.isEmpty)
+        return
+    for (var i = 0; i < this.value.length; i++){%>
+        <<%=tagName%>><%= this.value[i] %></<%=tagName%>>
+    <%}
+}
+}
+//take either one or array of values
+if (value instanceof Array)
+    tmp.value = value
+else{
+    tmp.value = [value]
+    if (value == null)
+        tmp.isEmpty = true
+}
+
+return tmp
+}
+
+function printTagNode(tagName, value, attrs){
+    var tmp = tagNode(tagName, value, attrs)
+    tmp.print()
+}
+
+function tagTree(tagName, children, attrs){
+var tmp = {
+'tagName' : tagName,
+'attrs' : attrs,
+'print' : function(){
+    if(this.isEmpty)
+        return
+    for(var childIdx = 0; childIdx < this.children.length; childIdx++){
+        openTag(this.tagName)
+
+        var child = this.children[childIdx]
+        for (var childTag =0; childTag <child.length; childTag++){
+            child[childTag].print()
+        }
+        closeTag(this.tagName)
+    }
+}
+}
+if (!(children[0] instanceof Array))
+    tmp.children = [children]
+else
+    tmp.children = children
+tmp.isEmpty = true
+for (var childIdx = 0; childIdx < tmp.children.length; childIdx++){
+    var child = tmp.children[childIdx]
+    for (var childTag =0; childTag <child.length; childTag++){
+        if (!(child[childTag].isEmpty)){
+            tmp.isEmpty = false
+            break
+        }
+    }if(!tmp.isEmpty)
+        break
+}
+return tmp
+}
+
+function printTagTree(tagName, children, attrs){
+    var tmp = tagTree(tagName, children, attrs)
+    tmp.print()
+}
+%>
+
+<?xml version="1.0" encoding="utf-8"?>
+<GetItemRecommendationsRequest xmlns="urn:ebay:apis:eBLBaseComponents"><%
+    printTagTree('RequesterCredentials', [tagNode('eBayAuthToken', params['RequesterCredentials.eBayAuthToken'])])
+    printTagNode('ErrorLanguage', params.ErrorLanguage)
+    printTagNode('MessageID', params.MessageID)
+    printTagNode('Version', params.Version)
+    printTagNode('WarningLevel', params.WarningLevel)
+    printTagTree('GetRecommendationsRequestContainer', [
+        tagNode('CorrelationID', params['GetRecommendationsRequestContainer.CorrelationID']), 
+        tagNode('DeletedField', params['GetRecommendationsRequestContainer.DeletedField']), 
+        tagNode('ExcludeRelationships', params['GetRecommendationsRequestContainer.ExcludeRelationships']), 
+        tagNode('IncludeConfidence', params['GetRecommendationsRequestContainer.IncludeConfidence']),
+        tagTree('Item', [
+            tagNode('ApplicationData', params['GetRecommendationsRequestContainer.Item.ApplicationData']),
+            tagTree('AttributeSetArray', [
+                tagTree('AttributeSet', [
+                    tagTree('Attribute', [
+                        tagTree('Value', [
+                            tagNode('ValueID', params['GetRecommendationsRequestContainer.Item.AttributeSetArray.AttributeSet.Attribute.Value.ValueID']), 
+                            tagNode('ValueLiteral', params['GetRecommendationsRequestContainer.Item.AttributeSetArray.AttributeSet.Attribute.Value.ValueLiteral'])])], {
+                    attributeID : params['GetRecommendationsRequestContainer.Item.AttributeSetArray.AttributeSet.Attribute']})], {
+                attributeSetID : params['GetRecommendationsRequestContainer.Item.AttributeSetArray.AttributeSet'], 
+                attributeSetVersion : params['GetRecommendationsRequestContainer.Item.AttributeSetArray.AttributeSet']})]), 
+            tagNode('AutoPay', params['GetRecommendationsRequestContainer.Item.AutoPay']),
+            tagTree('BestOfferDetails', [
+                tagNode('BestOfferEnabled', params['GetRecommendationsRequestContainer.Item.BestOfferDetails.BestOfferEnabled'])]),
+            tagTree('BuyerRequirementDetails', [
+                tagNode('LinkedPayPalAccount', params['GetRecommendationsRequestContainer.Item.BuyerRequirementDetails.LinkedPayPalAccount']),
+                tagTree('MaximumBuyerPolicyViolations', [
+                    tagNode('Count', params['GetRecommendationsRequestContainer.Item.BuyerRequirementDetails.MaximumBuyerPolicyViolations.Count']), 
+                    tagNode('Period', params['GetRecommendationsRequestContainer.Item.BuyerRequirementDetails.MaximumBuyerPolicyViolations.Period'])]),
+                tagTree('MaximumItemRequirements', [
+                    tagNode('MaximumItemCount', params['GetRecommendationsRequestContainer.Item.BuyerRequirementDetails.MaximumItemRequirements.MaximumItemCount']), 
+                    tagNode('MinimumFeedbackScore', params['GetRecommendationsRequestContainer.Item.BuyerRequirementDetails.MaximumItemRequirements.MinimumFeedbackScore'])]),
+                tagTree('MaximumUnpaidItemStrikesInfo', [
+                    tagNode('Count', params['GetRecommendationsRequestContainer.Item.BuyerRequirementDetails.MaximumUnpaidItemStrikesInfo.Count']), 
+                    tagNode('Period', params['GetRecommendationsRequestContainer.Item.BuyerRequirementDetails.MaximumUnpaidItemStrikesInfo.Period'])]), 
+                tagNode('MinimumFeedbackScore', params['GetRecommendationsRequestContainer.Item.BuyerRequirementDetails.MinimumFeedbackScore']), 
+                tagNode('ShipToRegistrationCountry', params['GetRecommendationsRequestContainer.Item.BuyerRequirementDetails.ShipToRegistrationCountry']),
+                tagTree('VerifiedUserRequirements', [
+                    tagNode('MinimumFeedbackScore', params['GetRecommendationsRequestContainer.Item.BuyerRequirementDetails.VerifiedUserRequirements.MinimumFeedbackScore']), 
+                    tagNode('VerifiedUser', params['GetRecommendationsRequestContainer.Item.BuyerRequirementDetails.VerifiedUserRequirements.VerifiedUser'])]), 
+                tagNode('ZeroFeedbackScore', params['GetRecommendationsRequestContainer.Item.BuyerRequirementDetails.ZeroFeedbackScore'])]), 
+            tagNode('BuyerResponsibleForShipping', params['GetRecommendationsRequestContainer.Item.BuyerResponsibleForShipping']), 
+            tagNode('BuyItNowPrice', params['GetRecommendationsRequestContainer.Item.BuyItNowPrice']), 
+            tagNode('CategoryBasedAttributesPrefill', params['GetRecommendationsRequestContainer.Item.CategoryBasedAttributesPrefill']), 
+            tagNode('CategoryMappingAllowed', params['GetRecommendationsRequestContainer.Item.CategoryMappingAllowed']),
+            tagTree('Charity', [
+                tagNode('CharityID', params['GetRecommendationsRequestContainer.Item.Charity.CharityID']), 
+                tagNode('CharityNumber', params['GetRecommendationsRequestContainer.Item.Charity.CharityNumber']), 
+                tagNode('DonationPercent', params['GetRecommendationsRequestContainer.Item.Charity.DonationPercent'])]), 
+            tagNode('Currency', params['GetRecommendationsRequestContainer.Item.Currency']), 
+            tagNode('Description', params['GetRecommendationsRequestContainer.Item.Description']), 
+            tagNode('DisableBuyerRequirements', params['GetRecommendationsRequestContainer.Item.DisableBuyerRequirements']), 
+            tagNode('DispatchTimeMax', params['GetRecommendationsRequestContainer.Item.DispatchTimeMax']),
+            tagTree('ExternalProductID', [
+                tagNode('ReturnSearchResultOnDuplicates', params['GetRecommendationsRequestContainer.Item.ExternalProductID.ReturnSearchResultOnDuplicates']), 
+                tagNode('Type', params['GetRecommendationsRequestContainer.Item.ExternalProductID.Type']), 
+                tagNode('Value', params['GetRecommendationsRequestContainer.Item.ExternalProductID.Value'])]), 
+            tagNode('GetItFast', params['GetRecommendationsRequestContainer.Item.GetItFast']), 
+            tagNode('GiftIcon', params['GetRecommendationsRequestContainer.Item.GiftIcon']), 
+            tagNode('GiftServices', params['GetRecommendationsRequestContainer.Item.GiftServices']), 
+            tagNode('HitCounter', params['GetRecommendationsRequestContainer.Item.HitCounter']), 
+            tagNode('ItemID', params['GetRecommendationsRequestContainer.Item.ItemID']),
+            tagTree('ItemSpecifics', [
+                tagTree('NameValueList', [
+                    tagNode('Name', params['GetRecommendationsRequestContainer.Item.ItemSpecifics.NameValueList.Name']), 
+                    tagNode('Value', params['GetRecommendationsRequestContainer.Item.ItemSpecifics.NameValueList.Value'])])]), 
+            tagNode('LimitedWarrantyEligible', params['GetRecommendationsRequestContainer.Item.LimitedWarrantyEligible']),
+            tagTree('ListingDesigner', [
+                tagNode('LayoutID', params['GetRecommendationsRequestContainer.Item.ListingDesigner.LayoutID']), 
+                tagNode('OptimalPictureSize', params['GetRecommendationsRequestContainer.Item.ListingDesigner.OptimalPictureSize']), 
+                tagNode('ThemeID', params['GetRecommendationsRequestContainer.Item.ListingDesigner.ThemeID'])]),
+            tagTree('ListingDetails', [
+                tagNode('LocalListingDistance', params['GetRecommendationsRequestContainer.Item.ListingDetails.LocalListingDistance']), 
+                tagNode('MinimumBestOfferMessage', params['GetRecommendationsRequestContainer.Item.ListingDetails.MinimumBestOfferMessage']), 
+                tagNode('MinimumBestOfferPrice', params['GetRecommendationsRequestContainer.Item.ListingDetails.MinimumBestOfferPrice'])]), 
+            tagNode('ListingDuration', params['GetRecommendationsRequestContainer.Item.ListingDuration']), 
+            tagNode('ListingEnhancement', params['GetRecommendationsRequestContainer.Item.ListingEnhancement']), 
+            tagNode('ListingType', params['GetRecommendationsRequestContainer.Item.ListingType']), 
+            tagNode('Location', params['GetRecommendationsRequestContainer.Item.Location']),
+            tagTree('LookupAttributeArray', [
+                tagTree('LookupAttribute', [
+                    tagNode('Name', params['GetRecommendationsRequestContainer.Item.LookupAttributeArray.LookupAttribute.Name']), 
+                    tagNode('Value', params['GetRecommendationsRequestContainer.Item.LookupAttributeArray.LookupAttribute.Value'])])]), 
+            tagNode('LotSize', params['GetRecommendationsRequestContainer.Item.LotSize']), 
+            tagNode('MotorsGermanySearchable', params['GetRecommendationsRequestContainer.Item.MotorsGermanySearchable']),
+            tagTree('PaymentDetails', [
+                tagNode('DaysToFullPayment', params['GetRecommendationsRequestContainer.Item.PaymentDetails.DaysToFullPayment']), 
+                tagNode('DepositAmount', params['GetRecommendationsRequestContainer.Item.PaymentDetails.DepositAmount']), 
+                tagNode('DepositType', params['GetRecommendationsRequestContainer.Item.PaymentDetails.DepositType']), 
+                tagNode('HoursToDeposit', params['GetRecommendationsRequestContainer.Item.PaymentDetails.HoursToDeposit'])]), 
+            tagNode('PaymentMethods', params['GetRecommendationsRequestContainer.Item.PaymentMethods']), 
+            tagNode('PayPalEmailAddress', params['GetRecommendationsRequestContainer.Item.PayPalEmailAddress']),
+            tagTree('PictureDetails', [
+                tagNode('GalleryType', params['GetRecommendationsRequestContainer.Item.PictureDetails.GalleryType']), 
+                tagNode('GalleryURL', params['GetRecommendationsRequestContainer.Item.PictureDetails.GalleryURL']), 
+                tagNode('PhotoDisplay', params['GetRecommendationsRequestContainer.Item.PictureDetails.PhotoDisplay']), 
+                tagNode('PictureURL', params['GetRecommendationsRequestContainer.Item.PictureDetails.PictureURL'])]), 
+            tagNode('PostalCode', params['GetRecommendationsRequestContainer.Item.PostalCode']),
+            tagTree('PrimaryCategory', [
+                tagNode('CategoryID', params['GetRecommendationsRequestContainer.Item.PrimaryCategory.CategoryID'])]), 
+            tagNode('PrivateListing', params['GetRecommendationsRequestContainer.Item.PrivateListing']), 
+            tagNode('PrivateNotes', params['GetRecommendationsRequestContainer.Item.PrivateNotes']),
+            tagTree('ProductListingDetails', [
+                tagNode('IncludePrefilledItemInformation', params['GetRecommendationsRequestContainer.Item.ProductListingDetails.IncludePrefilledItemInformation']), 
+                tagNode('IncludeStockPhotoURL', params['GetRecommendationsRequestContainer.Item.ProductListingDetails.IncludeStockPhotoURL']), 
+                tagNode('ProductID', params['GetRecommendationsRequestContainer.Item.ProductListingDetails.ProductID']), 
+                tagNode('ProductReferenceID', params['GetRecommendationsRequestContainer.Item.ProductListingDetails.ProductReferenceID']),
+                tagTree('TicketListingDetails', [
+                    tagNode('PrintedTime', params['GetRecommendationsRequestContainer.Item.ProductListingDetails.TicketListingDetails.PrintedTime'])]), 
+                tagNode('UseStockPhotoURLAsGallery', params['GetRecommendationsRequestContainer.Item.ProductListingDetails.UseStockPhotoURLAsGallery'])]), 
+            tagNode('Quantity', params['GetRecommendationsRequestContainer.Item.Quantity']), 
+            tagNode('ReservePrice', params['GetRecommendationsRequestContainer.Item.ReservePrice']),
+            tagTree('ReturnPolicy', [
+                tagNode('Description', params['GetRecommendationsRequestContainer.Item.ReturnPolicy.Description']), 
+                tagNode('EAN', params['GetRecommendationsRequestContainer.Item.ReturnPolicy.EAN']), 
+                tagNode('RefundOption', params['GetRecommendationsRequestContainer.Item.ReturnPolicy.RefundOption']), 
+                tagNode('ReturnsAcceptedOption', params['GetRecommendationsRequestContainer.Item.ReturnPolicy.ReturnsAcceptedOption']), 
+                tagNode('ReturnsWithinOption', params['GetRecommendationsRequestContainer.Item.ReturnPolicy.ReturnsWithinOption']), 
+                tagNode('ShippingCostPaidByOption', params['GetRecommendationsRequestContainer.Item.ReturnPolicy.ShippingCostPaidByOption']), 
+                tagNode('WarrantyDurationOption', params['GetRecommendationsRequestContainer.Item.ReturnPolicy.WarrantyDurationOption']), 
+                tagNode('WarrantyOfferedOption', params['GetRecommendationsRequestContainer.Item.ReturnPolicy.WarrantyOfferedOption']), 
+                tagNode('WarrantyTypeOption', params['GetRecommendationsRequestContainer.Item.ReturnPolicy.WarrantyTypeOption'])]), 
+            tagNode('ScheduleTime', params['GetRecommendationsRequestContainer.Item.ScheduleTime']),
+            tagTree('SecondaryCategory', [
+                tagNode('CategoryID', params['GetRecommendationsRequestContainer.Item.SecondaryCategory.CategoryID'])]), 
+            tagNode('SellerInventoryID', params['GetRecommendationsRequestContainer.Item.SellerInventoryID']), 
+            tagNode('SellerProvidedTitle', params['GetRecommendationsRequestContainer.Item.SellerProvidedTitle']),
+            tagTree('ShippingDetails', [
+                tagTree('CalculatedShippingRate', [
+                    tagNode('OriginatingPostalCode', params['GetRecommendationsRequestContainer.Item.ShippingDetails.CalculatedShippingRate.OriginatingPostalCode']), 
+                    tagNode('PackageDepth', params['GetRecommendationsRequestContainer.Item.ShippingDetails.CalculatedShippingRate.PackageDepth']), 
+                    tagNode('PackageLength', params['GetRecommendationsRequestContainer.Item.ShippingDetails.CalculatedShippingRate.PackageLength']), 
+                    tagNode('PackageWidth', params['GetRecommendationsRequestContainer.Item.ShippingDetails.CalculatedShippingRate.PackageWidth']), 
+                    tagNode('PackagingHandlingCosts', params['GetRecommendationsRequestContainer.Item.ShippingDetails.CalculatedShippingRate.PackagingHandlingCosts']), 
+                    tagNode('ShippingIrregular', params['GetRecommendationsRequestContainer.Item.ShippingDetails.CalculatedShippingRate.ShippingIrregular']), 
+                    tagNode('ShippingPackage', params['GetRecommendationsRequestContainer.Item.ShippingDetails.CalculatedShippingRate.ShippingPackage']), 
+                    tagNode('WeightMajor', params['GetRecommendationsRequestContainer.Item.ShippingDetails.CalculatedShippingRate.WeightMajor']), 
+                    tagNode('WeightMinor', params['GetRecommendationsRequestContainer.Item.ShippingDetails.CalculatedShippingRate.WeightMinor'])]), 
+                tagNode('ExcludeShipToLocation', params['GetRecommendationsRequestContainer.Item.ShippingDetails.ExcludeShipToLocation']), 
+                tagNode('InsuranceFee', params['GetRecommendationsRequestContainer.Item.ShippingDetails.InsuranceFee']), 
+                tagNode('InsuranceOption', params['GetRecommendationsRequestContainer.Item.ShippingDetails.InsuranceOption']),
+                tagTree('InternationalShippingServiceOption', [
+                    tagNode('ShippingService', params['GetRecommendationsRequestContainer.Item.ShippingDetails.InternationalShippingServiceOption.ShippingService']), 
+                    tagNode('ShippingServiceAdditionalCost', params['GetRecommendationsRequestContainer.Item.ShippingDetails.InternationalShippingServiceOption.ShippingServiceAdditionalCost']), 
+                    tagNode('ShippingServiceCost', params['GetRecommendationsRequestContainer.Item.ShippingDetails.InternationalShippingServiceOption.ShippingServiceCost']), 
+                    tagNode('ShippingServicePriority', params['GetRecommendationsRequestContainer.Item.ShippingDetails.InternationalShippingServiceOption.ShippingServicePriority']), 
+                    tagNode('ShipToLocation', params['GetRecommendationsRequestContainer.Item.ShippingDetails.InternationalShippingServiceOption.ShipToLocation'])]), 
+                tagNode('PaymentInstructions', params['GetRecommendationsRequestContainer.Item.ShippingDetails.PaymentInstructions']),
+                tagTree('SalesTax', [
+                    tagNode('SalesTaxPercent', params['GetRecommendationsRequestContainer.Item.ShippingDetails.SalesTax.SalesTaxPercent']), 
+                    tagNode('SalesTaxState', params['GetRecommendationsRequestContainer.Item.ShippingDetails.SalesTax.SalesTaxState']), 
+                    tagNode('ShippingIncludedInTax', params['GetRecommendationsRequestContainer.Item.ShippingDetails.SalesTax.ShippingIncludedInTax'])]),
+                tagTree('ShippingServiceOptions', [
+                    tagNode('ShippingService', params['GetRecommendationsRequestContainer.Item.ShippingDetails.ShippingServiceOptions.ShippingService']), 
+                    tagNode('ShippingServiceAdditionalCost', params['GetRecommendationsRequestContainer.Item.ShippingDetails.ShippingServiceOptions.ShippingServiceAdditionalCost']), 
+                    tagNode('ShippingServiceCost', params['GetRecommendationsRequestContainer.Item.ShippingDetails.ShippingServiceOptions.ShippingServiceCost']), 
+                    tagNode('ShippingServicePriority', params['GetRecommendationsRequestContainer.Item.ShippingDetails.ShippingServiceOptions.ShippingServicePriority']), 
+                    tagNode('ShippingSurcharge', params['GetRecommendationsRequestContainer.Item.ShippingDetails.ShippingServiceOptions.ShippingSurcharge'])]), 
+                tagNode('ShippingType', params['GetRecommendationsRequestContainer.Item.ShippingDetails.ShippingType'])]), 
+            tagNode('ShippingTermsInDescription', params['GetRecommendationsRequestContainer.Item.ShippingTermsInDescription']), 
+            tagNode('ShipToLocations', params['GetRecommendationsRequestContainer.Item.ShipToLocations']), 
+            tagNode('Site', params['GetRecommendationsRequestContainer.Item.Site']), 
+            tagNode('SKU', params['GetRecommendationsRequestContainer.Item.SKU']), 
+            tagNode('StartPrice', params['GetRecommendationsRequestContainer.Item.StartPrice']),
+            tagTree('Storefront', [
+                tagNode('StoreCategory2ID', params['GetRecommendationsRequestContainer.Item.Storefront.StoreCategory2ID']), 
+                tagNode('StoreCategoryID', params['GetRecommendationsRequestContainer.Item.Storefront.StoreCategoryID'])]), 
+            tagNode('SubTitle', params['GetRecommendationsRequestContainer.Item.SubTitle']), 
+            tagNode('ThirdPartyCheckout', params['GetRecommendationsRequestContainer.Item.ThirdPartyCheckout']), 
+            tagNode('ThirdPartyCheckoutIntegration', params['GetRecommendationsRequestContainer.Item.ThirdPartyCheckoutIntegration']), 
+            tagNode('Title', params['GetRecommendationsRequestContainer.Item.Title']), 
+            tagNode('UseTaxTable', params['GetRecommendationsRequestContainer.Item.UseTaxTable']),
+            tagTree('VATDetails', [
+                tagNode('BusinessSeller', params['GetRecommendationsRequestContainer.Item.VATDetails.BusinessSeller']), 
+                tagNode('RestrictedToBusiness', params['GetRecommendationsRequestContainer.Item.VATDetails.RestrictedToBusiness']), 
+                tagNode('VATPercent', params['GetRecommendationsRequestContainer.Item.VATDetails.VATPercent'])]), 
+            tagNode('VIN', params['GetRecommendationsRequestContainer.Item.VIN']), 
+            tagNode('VRM', params['GetRecommendationsRequestContainer.Item.VRM'])]), 
+        tagNode('ListingFlow', params['GetRecommendationsRequestContainer.ListingFlow']), 
+        tagNode('Query', params['GetRecommendationsRequestContainer.Query']), 
+        tagNode('RecommendationEngine', params['GetRecommendationsRequestContainer.RecommendationEngine'])])
+%></GetItemRecommendationsRequest>
