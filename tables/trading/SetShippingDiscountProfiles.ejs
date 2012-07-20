@@ -1,0 +1,174 @@
+
+<%
+var TAGNAME = 0
+var CONTENT = 1
+var ATTRS = 2
+var ANCESTORS = 3
+//check if an associative array is empty
+function isaaEmpty(aa){
+    for (key in aa)
+        return false
+    return true
+}
+
+
+
+//attrs is an associative array that holds attributes key-value pairs
+function openTag(tagName, attrs){%>
+    <<%= tagName %>
+    <%for (attrKey in attrs){%>
+        <%= attrKey %> = "<%= attrs[attrKey] %>"
+    <%}%>
+    >
+<%}
+
+function closeTag(tagName){%>
+    </<%=tagName%>>
+<%}
+
+function insert(value){%>
+    <%= value %>
+<%}
+
+function printAncestors(ancestorTags){
+    if (! (ancestorTags instanceof Array))
+        return
+    for (var i = 0; i < ancestorTags.length; i++)
+        openTag(ancestorTags[i])
+}
+
+
+
+function tagNode(tagName, value, attrs){
+var tmp =
+{
+'tagName' : tagName,
+'attrs' : attrs,
+'isEmpty' : false,
+'print' : function(){
+    if(this.isEmpty)
+        return
+    for (var i = 0; i < this.value.length; i++){%>
+    <<%= tagName %>
+        <%for (attrKey in attrs){%>
+            <%= attrKey %> = "<%= attrs[attrKey] %>"
+        <%}%>
+        ><%= this.value[i] %></<%=tagName%>>
+    <%}
+}
+}
+//take either one or array of values
+if (value instanceof Array)
+    tmp.value = value
+else{
+    tmp.value = [value]
+    if (value == null)
+        tmp.isEmpty = true
+}
+
+return tmp
+}
+
+function printTagNode(tagName, value, attrs){
+    var tmp = tagNode(tagName, value, attrs)
+    tmp.print()
+}
+
+function tagTree(tagName, children, attrs){
+var tmp = {
+'tagName' : tagName,
+'attrs' : attrs,
+'print' : function(){
+    if(this.isEmpty)
+        return
+    for(var childIdx = 0; childIdx < this.children.length; childIdx++){
+        openTag(this.tagName)
+
+        var child = this.children[childIdx]
+        for (var childTag =0; childTag <child.length; childTag++){
+            child[childTag].print()
+        }
+        closeTag(this.tagName)
+    }
+}
+}
+if (!(children[0] instanceof Array))
+    tmp.children = [children]
+else
+    tmp.children = children
+tmp.isEmpty = true
+for (var childIdx = 0; childIdx < tmp.children.length; childIdx++){
+    var child = tmp.children[childIdx]
+    for (var childTag =0; childTag <child.length; childTag++){
+        if (!(child[childTag].isEmpty)){
+            tmp.isEmpty = false
+            break
+        }
+    }if(!tmp.isEmpty)
+        break
+}
+return tmp
+}
+
+function printTagTree(tagName, children, attrs){
+    var tmp = tagTree(tagName, children, attrs)
+    tmp.print()
+}
+%>
+
+<?xml version="1.0" encoding="utf-8"?>
+<SetShippingDiscountProfilesRequest xmlns="urn:ebay:apis:eBLBaseComponents"><%
+    printTagTree('RequesterCredentials', [tagNode('eBayAuthToken', params['RequesterCredentials.eBayAuthToken'])])
+    printTagNode('ErrorLanguage', params.ErrorLanguage)
+    printTagNode('MessageID', params.MessageID)
+    printTagNode('Version', params.Version)
+    printTagNode('WarningLevel', params.WarningLevel)
+    printTagTree('CalculatedHandlingDiscount', [
+        tagNode('DiscountName', params['CalculatedHandlingDiscount.DiscountName']), 
+        tagNode('EachAdditionalAmount', params['CalculatedHandlingDiscount.EachAdditionalAmount'], {
+        currencyID : params['CalculatedHandlingDiscount.EachAdditionalAmount.currencyID']}), 
+        tagNode('EachAdditionalOffAmount', params['CalculatedHandlingDiscount.EachAdditionalOffAmount'], {
+        currencyID : params['CalculatedHandlingDiscount.EachAdditionalOffAmount.currencyID']}), 
+        tagNode('EachAdditionalPercentOff', params['CalculatedHandlingDiscount.EachAdditionalPercentOff']), 
+        tagNode('OrderHandlingAmount', params['CalculatedHandlingDiscount.OrderHandlingAmount'], {
+        currencyID : params['CalculatedHandlingDiscount.OrderHandlingAmount.currencyID']})])
+    printTagTree('CalculatedShippingDiscount', [
+        tagNode('DiscountName', params['CalculatedShippingDiscount.DiscountName']),
+        tagTree('DiscountProfile', [
+            tagNode('DiscountProfileID', params['CalculatedShippingDiscount.DiscountProfile.DiscountProfileID']), 
+            tagNode('DiscountProfileName', params['CalculatedShippingDiscount.DiscountProfile.DiscountProfileName']), 
+            tagNode('MappedDiscountProfileID', params['CalculatedShippingDiscount.DiscountProfile.MappedDiscountProfileID']), 
+            tagNode('WeightOff', params['CalculatedShippingDiscount.DiscountProfile.WeightOff'])])])
+    printTagNode('CombinedDuration', params.CombinedDuration)
+    printTagNode('CurrencyID', params.CurrencyID)
+    printTagTree('FlatShippingDiscount', [
+        tagNode('DiscountName', params['FlatShippingDiscount.DiscountName']),
+        tagTree('DiscountProfile', [
+            tagNode('DiscountProfileID', params['FlatShippingDiscount.DiscountProfile.DiscountProfileID']), 
+            tagNode('DiscountProfileName', params['FlatShippingDiscount.DiscountProfile.DiscountProfileName']), 
+            tagNode('EachAdditionalAmount', params['FlatShippingDiscount.DiscountProfile.EachAdditionalAmount'], {
+            currencyID : params['FlatShippingDiscount.DiscountProfile.EachAdditionalAmount.currencyID']}), 
+            tagNode('EachAdditionalAmountOff', params['FlatShippingDiscount.DiscountProfile.EachAdditionalAmountOff'], {
+            currencyID : params['FlatShippingDiscount.DiscountProfile.EachAdditionalAmountOff.currencyID']}), 
+            tagNode('EachAdditionalPercentOff', params['FlatShippingDiscount.DiscountProfile.EachAdditionalPercentOff'])])])
+    printTagTree('InternationalShippingInsurance', [
+        tagTree('FlatRateInsuranceRangeCost', [
+            tagNode('FlatRateInsuranceRange', params['InternationalShippingInsurance.FlatRateInsuranceRangeCost.FlatRateInsuranceRange']), 
+            tagNode('InsuranceCost', params['InternationalShippingInsurance.FlatRateInsuranceRangeCost.InsuranceCost'], {
+            currencyID : params['InternationalShippingInsurance.FlatRateInsuranceRangeCost.InsuranceCost.currencyID']})]), 
+        tagNode('InsuranceOption', params['InternationalShippingInsurance.InsuranceOption'])])
+    printTagNode('ModifyActionCode', params.ModifyActionCode)
+    printTagTree('PromotionalShippingDiscountDetails', [
+        tagNode('DiscountName', params['PromotionalShippingDiscountDetails.DiscountName']), 
+        tagNode('ItemCount', params['PromotionalShippingDiscountDetails.ItemCount']), 
+        tagNode('OrderAmount', params['PromotionalShippingDiscountDetails.OrderAmount'], {
+        currencyID : params['PromotionalShippingDiscountDetails.OrderAmount.currencyID']}), 
+        tagNode('ShippingCost', params['PromotionalShippingDiscountDetails.ShippingCost'], {
+        currencyID : params['PromotionalShippingDiscountDetails.ShippingCost.currencyID']})])
+    printTagTree('ShippingInsurance', [
+        tagTree('FlatRateInsuranceRangeCost', [
+            tagNode('FlatRateInsuranceRange', params['ShippingInsurance.FlatRateInsuranceRangeCost.FlatRateInsuranceRange']), 
+            tagNode('InsuranceCost', params['ShippingInsurance.FlatRateInsuranceRangeCost.InsuranceCost'], {
+            currencyID : params['ShippingInsurance.FlatRateInsuranceRangeCost.InsuranceCost.currencyID']})]), 
+        tagNode('InsuranceOption', params['ShippingInsurance.InsuranceOption'])])
+%></SetShippingDiscountProfilesRequest>

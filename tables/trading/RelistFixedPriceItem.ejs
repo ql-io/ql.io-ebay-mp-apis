@@ -1,0 +1,364 @@
+
+<%
+var TAGNAME = 0
+var CONTENT = 1
+var ATTRS = 2
+var ANCESTORS = 3
+//check if an associative array is empty
+function isaaEmpty(aa){
+    for (key in aa)
+        return false
+    return true
+}
+
+
+
+//attrs is an associative array that holds attributes key-value pairs
+function openTag(tagName, attrs){%>
+    <<%= tagName %>
+    <%for (attrKey in attrs){%>
+        <%= attrKey %> = "<%= attrs[attrKey] %>"
+    <%}%>
+    >
+<%}
+
+function closeTag(tagName){%>
+    </<%=tagName%>>
+<%}
+
+function insert(value){%>
+    <%= value %>
+<%}
+
+function printAncestors(ancestorTags){
+    if (! (ancestorTags instanceof Array))
+        return
+    for (var i = 0; i < ancestorTags.length; i++)
+        openTag(ancestorTags[i])
+}
+
+
+
+function tagNode(tagName, value, attrs){
+var tmp =
+{
+'tagName' : tagName,
+'attrs' : attrs,
+'isEmpty' : false,
+'print' : function(){
+    if(this.isEmpty)
+        return
+    for (var i = 0; i < this.value.length; i++){%>
+    <<%= tagName %>
+        <%for (attrKey in attrs){%>
+            <%= attrKey %> = "<%= attrs[attrKey] %>"
+        <%}%>
+        ><%= this.value[i] %></<%=tagName%>>
+    <%}
+}
+}
+//take either one or array of values
+if (value instanceof Array)
+    tmp.value = value
+else{
+    tmp.value = [value]
+    if (value == null)
+        tmp.isEmpty = true
+}
+
+return tmp
+}
+
+function printTagNode(tagName, value, attrs){
+    var tmp = tagNode(tagName, value, attrs)
+    tmp.print()
+}
+
+function tagTree(tagName, children, attrs){
+var tmp = {
+'tagName' : tagName,
+'attrs' : attrs,
+'print' : function(){
+    if(this.isEmpty)
+        return
+    for(var childIdx = 0; childIdx < this.children.length; childIdx++){
+        openTag(this.tagName)
+
+        var child = this.children[childIdx]
+        for (var childTag =0; childTag <child.length; childTag++){
+            child[childTag].print()
+        }
+        closeTag(this.tagName)
+    }
+}
+}
+if (!(children[0] instanceof Array))
+    tmp.children = [children]
+else
+    tmp.children = children
+tmp.isEmpty = true
+for (var childIdx = 0; childIdx < tmp.children.length; childIdx++){
+    var child = tmp.children[childIdx]
+    for (var childTag =0; childTag <child.length; childTag++){
+        if (!(child[childTag].isEmpty)){
+            tmp.isEmpty = false
+            break
+        }
+    }if(!tmp.isEmpty)
+        break
+}
+return tmp
+}
+
+function printTagTree(tagName, children, attrs){
+    var tmp = tagTree(tagName, children, attrs)
+    tmp.print()
+}
+%>
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelistFixedPriceItemRequest xmlns="urn:ebay:apis:eBLBaseComponents"><%
+    printTagTree('RequesterCredentials', [tagNode('eBayAuthToken', params['RequesterCredentials.eBayAuthToken'])])
+    printTagNode('ErrorLanguage', params.ErrorLanguage)
+    printTagNode('MessageID', params.MessageID)
+    printTagNode('Version', params.Version)
+    printTagNode('WarningLevel', params.WarningLevel)
+    printTagNode('DeletedField', params.DeletedField)
+    printTagTree('Item', [
+        tagNode('ApplicationData', params['Item.ApplicationData']),
+        tagTree('AttributeSetArray', [
+            tagTree('AttributeSet', [
+                tagTree('Attribute', [
+                    tagTree('Value', [
+                        tagNode('ValueID', params['Item.AttributeSetArray.AttributeSet.Attribute.Value.ValueID']), 
+                        tagNode('ValueLiteral', params['Item.AttributeSetArray.AttributeSet.Attribute.Value.ValueLiteral'])])], {
+                attributeID : params['Item.AttributeSetArray.AttributeSet.Attribute.attributeID']})], {
+            attributeSetID : params['Item.AttributeSetArray.AttributeSet.attributeSetID'], 
+            attributeSetVersion : params['Item.AttributeSetArray.AttributeSet.attributeSetVersion']})]), 
+        tagNode('AutoPay', params['Item.AutoPay']), 
+        tagNode('CategoryBasedAttributesPrefill', params['Item.CategoryBasedAttributesPrefill']), 
+        tagNode('CategoryMappingAllowed', params['Item.CategoryMappingAllowed']),
+        tagTree('Charity', [
+            tagNode('CharityID', params['Item.Charity.CharityID']), 
+            tagNode('CharityNumber', params['Item.Charity.CharityNumber']), 
+            tagNode('DonationPercent', params['Item.Charity.DonationPercent'])]), 
+        tagNode('ConditionID', params['Item.ConditionID']), 
+        tagNode('Country', params['Item.Country']), 
+        tagNode('CrossBorderTrade', params['Item.CrossBorderTrade']), 
+        tagNode('Description', params['Item.Description']), 
+        tagNode('DisableBuyerRequirements', params['Item.DisableBuyerRequirements']),
+        tagTree('DiscountPriceInfo', [
+            tagNode('MadeForOutletComparisonPrice', params['Item.DiscountPriceInfo.MadeForOutletComparisonPrice']), 
+            tagNode('MinimumAdvertisedPrice', params['Item.DiscountPriceInfo.MinimumAdvertisedPrice']), 
+            tagNode('MinimumAdvertisedPriceExposure', params['Item.DiscountPriceInfo.MinimumAdvertisedPriceExposure']), 
+            tagNode('OriginalRetailPrice', params['Item.DiscountPriceInfo.OriginalRetailPrice']), 
+            tagNode('SoldOffeBay', params['Item.DiscountPriceInfo.SoldOffeBay']), 
+            tagNode('SoldOneBay', params['Item.DiscountPriceInfo.SoldOneBay'])]), 
+        tagNode('DispatchTimeMax', params['Item.DispatchTimeMax']), 
+        tagNode('GetItFast', params['Item.GetItFast']), 
+        tagNode('GiftIcon', params['Item.GiftIcon']), 
+        tagNode('GiftServices', params['Item.GiftServices']), 
+        tagNode('HitCounter', params['Item.HitCounter']), 
+        tagNode('InventoryTrackingMethod', params['Item.InventoryTrackingMethod']),
+        tagTree('ItemCompatibilityList', [
+            tagTree('Compatibility', [
+                tagNode('CompatibilityNotes', params['Item.ItemCompatibilityList.Compatibility.CompatibilityNotes']),
+                tagTree('NameValueList', [
+                    tagNode('Name', params['Item.ItemCompatibilityList.Compatibility.NameValueList.Name']), 
+                    tagNode('Value', params['Item.ItemCompatibilityList.Compatibility.NameValueList.Value'])])]), 
+            tagNode('ReplaceAll', params['Item.ItemCompatibilityList.ReplaceAll'])]), 
+        tagNode('ItemID', params['Item.ItemID']),
+        tagTree('ItemSpecifics', [
+            tagTree('NameValueList', [
+                tagNode('Name', params['Item.ItemSpecifics.NameValueList.Name']), 
+                tagNode('Value', params['Item.ItemSpecifics.NameValueList.Value'])])]),
+        tagTree('ListingCheckoutRedirectPreference', [
+            tagNode('ProStoresStoreName', params['Item.ListingCheckoutRedirectPreference.ProStoresStoreName']), 
+            tagNode('SellerThirdPartyUsername', params['Item.ListingCheckoutRedirectPreference.SellerThirdPartyUsername'])]),
+        tagTree('ListingDesigner', [
+            tagNode('LayoutID', params['Item.ListingDesigner.LayoutID']), 
+            tagNode('OptimalPictureSize', params['Item.ListingDesigner.OptimalPictureSize']), 
+            tagNode('ThemeID', params['Item.ListingDesigner.ThemeID'])]),
+        tagTree('ListingDetails', [
+            tagNode('PayPerLeadEnabled', params['Item.ListingDetails.PayPerLeadEnabled'])]), 
+        tagNode('ListingDuration', params['Item.ListingDuration']), 
+        tagNode('ListingEnhancement', params['Item.ListingEnhancement']), 
+        tagNode('ListingType', params['Item.ListingType']), 
+        tagNode('Location', params['Item.Location']),
+        tagTree('LookupAttributeArray', [
+            tagTree('LookupAttribute', [
+                tagNode('Name', params['Item.LookupAttributeArray.LookupAttribute.Name']), 
+                tagNode('Value', params['Item.LookupAttributeArray.LookupAttribute.Value'])])]), 
+        tagNode('PaymentMethods', params['Item.PaymentMethods']), 
+        tagNode('PayPalEmailAddress', params['Item.PayPalEmailAddress']),
+        tagTree('PictureDetails', [
+            tagNode('ExternalPictureURL', params['Item.PictureDetails.ExternalPictureURL']), 
+            tagNode('GalleryDuration', params['Item.PictureDetails.GalleryDuration']), 
+            tagNode('GalleryType', params['Item.PictureDetails.GalleryType']), 
+            tagNode('GalleryURL', params['Item.PictureDetails.GalleryURL']), 
+            tagNode('PhotoDisplay', params['Item.PictureDetails.PhotoDisplay']), 
+            tagNode('PictureSource', params['Item.PictureDetails.PictureSource']), 
+            tagNode('PictureURL', params['Item.PictureDetails.PictureURL'])]), 
+        tagNode('PostalCode', params['Item.PostalCode']), 
+        tagNode('PostCheckoutExperienceEnabled', params['Item.PostCheckoutExperienceEnabled']),
+        tagTree('PrimaryCategory', [
+            tagNode('CategoryID', params['Item.PrimaryCategory.CategoryID'])]), 
+        tagNode('PrivateListing', params['Item.PrivateListing']), 
+        tagNode('PrivateNotes', params['Item.PrivateNotes']),
+        tagTree('ProductListingDetails', [
+            tagTree('BrandMPN', [
+                tagNode('Brand', params['Item.ProductListingDetails.BrandMPN.Brand']), 
+                tagNode('MPN', params['Item.ProductListingDetails.BrandMPN.MPN'])]), 
+            tagNode('EAN', params['Item.ProductListingDetails.EAN']), 
+            tagNode('GTIN', params['Item.ProductListingDetails.GTIN']), 
+            tagNode('IncludePrefilledItemInformation', params['Item.ProductListingDetails.IncludePrefilledItemInformation']), 
+            tagNode('IncludeStockPhotoURL', params['Item.ProductListingDetails.IncludeStockPhotoURL']), 
+            tagNode('ISBN', params['Item.ProductListingDetails.ISBN']), 
+            tagNode('ListIfNoProduct', params['Item.ProductListingDetails.ListIfNoProduct']), 
+            tagNode('ProductID', params['Item.ProductListingDetails.ProductID']), 
+            tagNode('ProductReferenceID', params['Item.ProductListingDetails.ProductReferenceID']), 
+            tagNode('ReturnSearchResultOnDuplicates', params['Item.ProductListingDetails.ReturnSearchResultOnDuplicates']),
+            tagTree('TicketListingDetails', [
+                tagNode('EventTitle', params['Item.ProductListingDetails.TicketListingDetails.EventTitle']), 
+                tagNode('PrintedDate', params['Item.ProductListingDetails.TicketListingDetails.PrintedDate']), 
+                tagNode('PrintedTime', params['Item.ProductListingDetails.TicketListingDetails.PrintedTime']), 
+                tagNode('Venue', params['Item.ProductListingDetails.TicketListingDetails.Venue'])]), 
+            tagNode('UPC', params['Item.ProductListingDetails.UPC']), 
+            tagNode('UseFirstProduct', params['Item.ProductListingDetails.UseFirstProduct']), 
+            tagNode('UseStockPhotoURLAsGallery', params['Item.ProductListingDetails.UseStockPhotoURLAsGallery'])]), 
+        tagNode('Quantity', params['Item.Quantity']),
+        tagTree('QuantityInfo', [
+            tagNode('MinimumRemnantSet', params['Item.QuantityInfo.MinimumRemnantSet'])]), 
+        tagNode('RelistLink', params['Item.RelistLink']),
+        tagTree('ReturnPolicy', [
+            tagNode('Description', params['Item.ReturnPolicy.Description']), 
+            tagNode('EAN', params['Item.ReturnPolicy.EAN']), 
+            tagNode('RefundOption', params['Item.ReturnPolicy.RefundOption']), 
+            tagNode('ReturnsAcceptedOption', params['Item.ReturnPolicy.ReturnsAcceptedOption']), 
+            tagNode('ReturnsWithinOption', params['Item.ReturnPolicy.ReturnsWithinOption']), 
+            tagNode('ShippingCostPaidByOption', params['Item.ReturnPolicy.ShippingCostPaidByOption']), 
+            tagNode('WarrantyDurationOption', params['Item.ReturnPolicy.WarrantyDurationOption']), 
+            tagNode('WarrantyOfferedOption', params['Item.ReturnPolicy.WarrantyOfferedOption']), 
+            tagNode('WarrantyTypeOption', params['Item.ReturnPolicy.WarrantyTypeOption'])]), 
+        tagNode('ScheduleTime', params['Item.ScheduleTime']),
+        tagTree('SecondaryCategory', [
+            tagNode('CategoryID', params['Item.SecondaryCategory.CategoryID'])]),
+        tagTree('SellerProfiles', [
+            tagTree('SellerPaymentProfile', [
+                tagNode('PaymentProfileID', params['Item.SellerProfiles.SellerPaymentProfile.PaymentProfileID']), 
+                tagNode('PaymentProfileName', params['Item.SellerProfiles.SellerPaymentProfile.PaymentProfileName'])]),
+            tagTree('SellerReturnProfile', [
+                tagNode('ReturnProfileID', params['Item.SellerProfiles.SellerReturnProfile.ReturnProfileID']), 
+                tagNode('ReturnProfileName', params['Item.SellerProfiles.SellerReturnProfile.ReturnProfileName'])]),
+            tagTree('SellerShippingProfile', [
+                tagNode('ShippingProfileID', params['Item.SellerProfiles.SellerShippingProfile.ShippingProfileID']), 
+                tagNode('ShippingProfileName', params['Item.SellerProfiles.SellerShippingProfile.ShippingProfileName'])])]), 
+        tagNode('SellerProvidedTitle', params['Item.SellerProvidedTitle']),
+        tagTree('ShippingDetails', [
+            tagTree('CalculatedShippingRate', [
+                tagNode('MeasurementUnit', params['Item.ShippingDetails.CalculatedShippingRate.MeasurementUnit']), 
+                tagNode('OriginatingPostalCode', params['Item.ShippingDetails.CalculatedShippingRate.OriginatingPostalCode']), 
+                tagNode('PackageDepth', params['Item.ShippingDetails.CalculatedShippingRate.PackageDepth']), 
+                tagNode('PackageLength', params['Item.ShippingDetails.CalculatedShippingRate.PackageLength']), 
+                tagNode('PackageWidth', params['Item.ShippingDetails.CalculatedShippingRate.PackageWidth']), 
+                tagNode('PackagingHandlingCosts', params['Item.ShippingDetails.CalculatedShippingRate.PackagingHandlingCosts']), 
+                tagNode('ShippingIrregular', params['Item.ShippingDetails.CalculatedShippingRate.ShippingIrregular']), 
+                tagNode('ShippingPackage', params['Item.ShippingDetails.CalculatedShippingRate.ShippingPackage']), 
+                tagNode('WeightMajor', params['Item.ShippingDetails.CalculatedShippingRate.WeightMajor']), 
+                tagNode('WeightMinor', params['Item.ShippingDetails.CalculatedShippingRate.WeightMinor'])]), 
+            tagNode('CODCost', params['Item.ShippingDetails.CODCost']), 
+            tagNode('ExcludeShipToLocation', params['Item.ShippingDetails.ExcludeShipToLocation']),
+            tagTree('InsuranceDetails', [
+                tagNode('InsuranceFee', params['Item.ShippingDetails.InsuranceDetails.InsuranceFee']), 
+                tagNode('InsuranceOption', params['Item.ShippingDetails.InsuranceDetails.InsuranceOption'])]), 
+            tagNode('InsuranceFee', params['Item.ShippingDetails.InsuranceFee']), 
+            tagNode('InsuranceOption', params['Item.ShippingDetails.InsuranceOption']),
+            tagTree('InternationalInsuranceDetails', [
+                tagNode('InsuranceFee', params['Item.ShippingDetails.InternationalInsuranceDetails.InsuranceFee']), 
+                tagNode('InsuranceOption', params['Item.ShippingDetails.InternationalInsuranceDetails.InsuranceOption'])]), 
+            tagNode('InternationalPromotionalShippingDiscount', params['Item.ShippingDetails.InternationalPromotionalShippingDiscount']), 
+            tagNode('InternationalShippingDiscountProfileID', params['Item.ShippingDetails.InternationalShippingDiscountProfileID']),
+            tagTree('InternationalShippingServiceOption', [
+                tagNode('ShippingService', params['Item.ShippingDetails.InternationalShippingServiceOption.ShippingService']), 
+                tagNode('ShippingServiceAdditionalCost', params['Item.ShippingDetails.InternationalShippingServiceOption.ShippingServiceAdditionalCost']), 
+                tagNode('ShippingServiceCost', params['Item.ShippingDetails.InternationalShippingServiceOption.ShippingServiceCost']), 
+                tagNode('ShippingServicePriority', params['Item.ShippingDetails.InternationalShippingServiceOption.ShippingServicePriority']), 
+                tagNode('ShipToLocation', params['Item.ShippingDetails.InternationalShippingServiceOption.ShipToLocation'])]), 
+            tagNode('PaymentInstructions', params['Item.ShippingDetails.PaymentInstructions']), 
+            tagNode('PromotionalShippingDiscount', params['Item.ShippingDetails.PromotionalShippingDiscount']),
+            tagTree('RateTableDetails', [
+                tagNode('DomesticRateTable', params['Item.ShippingDetails.RateTableDetails.DomesticRateTable'])]),
+            tagTree('SalesTax', [
+                tagNode('SalesTaxPercent', params['Item.ShippingDetails.SalesTax.SalesTaxPercent']), 
+                tagNode('SalesTaxState', params['Item.ShippingDetails.SalesTax.SalesTaxState']), 
+                tagNode('ShippingIncludedInTax', params['Item.ShippingDetails.SalesTax.ShippingIncludedInTax'])]), 
+            tagNode('ShippingDiscountProfileID', params['Item.ShippingDetails.ShippingDiscountProfileID']),
+            tagTree('ShippingServiceOptions', [
+                tagNode('FreeShipping', params['Item.ShippingDetails.ShippingServiceOptions.FreeShipping']), 
+                tagNode('ShippingService', params['Item.ShippingDetails.ShippingServiceOptions.ShippingService']), 
+                tagNode('ShippingServiceAdditionalCost', params['Item.ShippingDetails.ShippingServiceOptions.ShippingServiceAdditionalCost']), 
+                tagNode('ShippingServiceCost', params['Item.ShippingDetails.ShippingServiceOptions.ShippingServiceCost']), 
+                tagNode('ShippingServicePriority', params['Item.ShippingDetails.ShippingServiceOptions.ShippingServicePriority']), 
+                tagNode('ShippingSurcharge', params['Item.ShippingDetails.ShippingServiceOptions.ShippingSurcharge'])]), 
+            tagNode('ShippingType', params['Item.ShippingDetails.ShippingType'])]),
+        tagTree('ShippingPackageDetails', [
+            tagNode('MeasurementUnit', params['Item.ShippingPackageDetails.MeasurementUnit']), 
+            tagNode('PackageDepth', params['Item.ShippingPackageDetails.PackageDepth']), 
+            tagNode('PackageLength', params['Item.ShippingPackageDetails.PackageLength']), 
+            tagNode('PackageWidth', params['Item.ShippingPackageDetails.PackageWidth']), 
+            tagNode('ShippingIrregular', params['Item.ShippingPackageDetails.ShippingIrregular']), 
+            tagNode('ShippingPackage', params['Item.ShippingPackageDetails.ShippingPackage']), 
+            tagNode('WeightMajor', params['Item.ShippingPackageDetails.WeightMajor']), 
+            tagNode('WeightMinor', params['Item.ShippingPackageDetails.WeightMinor'])]), 
+        tagNode('ShippingTermsInDescription', params['Item.ShippingTermsInDescription']), 
+        tagNode('ShipToLocations', params['Item.ShipToLocations']), 
+        tagNode('Site', params['Item.Site']), 
+        tagNode('SKU', params['Item.SKU']), 
+        tagNode('SkypeContactOption', params['Item.SkypeContactOption']), 
+        tagNode('SkypeEnabled', params['Item.SkypeEnabled']), 
+        tagNode('SkypeID', params['Item.SkypeID']), 
+        tagNode('StartPrice', params['Item.StartPrice']),
+        tagTree('Storefront', [
+            tagNode('StoreCategory2ID', params['Item.Storefront.StoreCategory2ID']), 
+            tagNode('StoreCategoryID', params['Item.Storefront.StoreCategoryID'])]), 
+        tagNode('SubTitle', params['Item.SubTitle']), 
+        tagNode('TaxCategory', params['Item.TaxCategory']), 
+        tagNode('ThirdPartyCheckout', params['Item.ThirdPartyCheckout']), 
+        tagNode('ThirdPartyCheckoutIntegration', params['Item.ThirdPartyCheckoutIntegration']), 
+        tagNode('Title', params['Item.Title']), 
+        tagNode('UseRecommendedProduct', params['Item.UseRecommendedProduct']), 
+        tagNode('UseTaxTable', params['Item.UseTaxTable']), 
+        tagNode('UUID', params['Item.UUID']),
+        tagTree('Variations', [
+            tagTree('Pictures', [
+                tagNode('VariationSpecificName', params['Item.Variations.Pictures.VariationSpecificName']),
+                tagTree('VariationSpecificPictureSet', [
+                    tagNode('PictureURL', params['Item.Variations.Pictures.VariationSpecificPictureSet.PictureURL']), 
+                    tagNode('VariationSpecificValue', params['Item.Variations.Pictures.VariationSpecificPictureSet.VariationSpecificValue'])])]),
+            tagTree('Variation', [
+                tagNode('Delete', params['Item.Variations.Variation.Delete']),
+                tagTree('DiscountPriceInfo', [
+                    tagNode('MadeForOutletComparisonPrice', params['Item.Variations.Variation.DiscountPriceInfo.MadeForOutletComparisonPrice']), 
+                    tagNode('MinimumAdvertisedPrice', params['Item.Variations.Variation.DiscountPriceInfo.MinimumAdvertisedPrice']), 
+                    tagNode('MinimumAdvertisedPriceExposure', params['Item.Variations.Variation.DiscountPriceInfo.MinimumAdvertisedPriceExposure']), 
+                    tagNode('OriginalRetailPrice', params['Item.Variations.Variation.DiscountPriceInfo.OriginalRetailPrice']), 
+                    tagNode('SoldOffeBay', params['Item.Variations.Variation.DiscountPriceInfo.SoldOffeBay']), 
+                    tagNode('SoldOneBay', params['Item.Variations.Variation.DiscountPriceInfo.SoldOneBay'])]), 
+                tagNode('Quantity', params['Item.Variations.Variation.Quantity']), 
+                tagNode('SKU', params['Item.Variations.Variation.SKU']), 
+                tagNode('StartPrice', params['Item.Variations.Variation.StartPrice']),
+                tagTree('VariationSpecifics', [
+                    tagTree('NameValueList', [
+                        tagNode('Name', params['Item.Variations.Variation.VariationSpecifics.NameValueList.Name']), 
+                        tagNode('Value', params['Item.Variations.Variation.VariationSpecifics.NameValueList.Value'])])])]),
+            tagTree('VariationSpecificsSet', [
+                tagTree('NameValueList', [
+                    tagNode('Name', params['Item.Variations.VariationSpecificsSet.NameValueList.Name']), 
+                    tagNode('Value', params['Item.Variations.VariationSpecificsSet.NameValueList.Value'])])])]),
+        tagTree('VATDetails', [
+            tagNode('BusinessSeller', params['Item.VATDetails.BusinessSeller']), 
+            tagNode('RestrictedToBusiness', params['Item.VATDetails.RestrictedToBusiness']), 
+            tagNode('VATPercent', params['Item.VATDetails.VATPercent'])]), 
+        tagNode('VIN', params['Item.VIN']), 
+        tagNode('VRM', params['Item.VRM'])])
+%></RelistFixedPriceItemRequest>

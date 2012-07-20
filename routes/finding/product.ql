@@ -1,0 +1,6 @@
+-- Finds items based upon a product ID, such as an ISBN, UPC, EAN, or ePID.
+return select searchResult.item, errorMessage
+from ebay.finding.findItemsByProduct where affiliate.customId = '{affiliate.customId}' and affiliate.geoTargeting = '{affiliate.geoTargeting}' and affiliate.networkId = '{affiliate.networkId}' and affiliate.trackingId = '{affiliate.trackingId}' and buyerPostalCode = '{buyerPostalCode}' and paginationInput.entriesPerPage = '{paginationInput.entriesPerPage}' and paginationInput.pageNumber = '{paginationInput.pageNumber}' and sortOrder = '{sortOrder}' and itemFilter.name = '{itemFilter.name}' and itemFilter.paramName = '{itemFilter.paramName}' and itemFilter.paramValue = '{itemFilter.paramValue}' and itemFilter.value = '{itemFilter.value}' and outputSelector = '{outputSelector}' and productId.type = '{productId.type}'
+via route '/ebay/trading/finditemsbyproduct?customId={affiliate.customId}&geoTargeting={affiliate.geoTargeting}&networkId={affiliate.networkId}&trackingId={affiliate.trackingId}&buyerPostalCode={buyerPostalCode}&entriesPerPage={paginationInput.entriesPerPage}&pageNumber={paginationInput.pageNumber}&sortOrder={sortOrder}&name={itemFilter.name}&paramName={itemFilter.paramName}&paramValue={itemFilter.paramValue}&value={itemFilter.value}&outputSelector={outputSelector}&type={productId.type}'
+with optional param
+using method get;

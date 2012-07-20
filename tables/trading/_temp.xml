@@ -1,0 +1,52 @@
+<AddItemRequest xmlns="urn:ebay:apis:eBLBaseComponents">
+    <ErrorLanguage>en_US</ErrorLanguage>
+    <WarningLevel>High</WarningLevel>
+    <Item>
+        <Title>Harry Potter and the Philosopher's Stone</Title>
+        <Description>This is the first book in the Harry Potter series. In excellent condition!</Description>
+        <PrimaryCategory>
+            <CategoryID>377</CategoryID>
+        </PrimaryCategory>
+        <StartPrice>1.00</StartPrice>
+        <ConditionID>3000</ConditionID>
+        <CategoryMappingAllowed>true</CategoryMappingAllowed>
+        <Country>US</Country>
+        <Currency>USD</Currency>
+        <DispatchTimeMax>3</DispatchTimeMax>
+        <ListingDuration>Days_7</ListingDuration>
+        <ListingType>Chinese</ListingType>
+        <PaymentMethods>PayPal</PaymentMethods>
+        <PayPalEmailAddress>magicalbookseller@yahoo.com</PayPalEmailAddress>
+        <PictureDetails>
+            <PictureURL>http://i.ebayimg.sandbox.ebay.com/00/s/MTAwMFg2NjA=/$(KGrHqZHJ!wE8e5qDPeFBPLCCuHGYw~~60_1.JPG?set_id=8800005007</PictureURL>
+        </PictureDetails>
+        <PostalCode>95125</PostalCode>
+        <Quantity>1</Quantity>
+        <ReturnPolicy>
+            <ReturnsAcceptedOption>ReturnsAccepted</ReturnsAcceptedOption>
+            <RefundOption>MoneyBack</RefundOption>
+            <ReturnsWithinOption>Days_30</ReturnsWithinOption>
+            <Description>
+                This is the first book in the Harry Potter series. In excellent condition!
+            </Description>
+            <ShippingCostPaidByOption>Buyer</ShippingCostPaidByOption>
+        </ReturnPolicy>
+        <ShippingDetails>
+            <ShippingType>Flat</ShippingType>
+            <ShippingServiceOptions>
+                <ShippingServicePriority>1</ShippingServicePriority>
+                <ShippingService>USPSMedia</ShippingService>
+                <ShippingServiceCost>
+                    2.50
+                </ShippingServiceCost>
+            </ShippingServiceOptions>
+        </ShippingDetails>
+        <Site>US</Site>
+        <UUID>fc0db2259dd14f7780f1886f3bb7b4a9</UUID>
+    </Item>
+    <RequesterCredentials>
+        <eBayAuthToken>AgAAAA**AQAAAA**aAAAAA**mRsvTg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4CoAZeHowmdj6x9nY+seQ**2oQBAA**AAMAAA**4zft+pfZAUlEDvEbfasDfR4BwoxjEoWAwxvvykdZ/7il08ZLxfgiAj/bQujsZy0NteI7lKg2+MA25CY0LDfjA/YoPdhVCa0eu+BvgSLM+qigoWmA2A/81bRDs7i6pU3F2hXTGdToAkFpsTCec9G4H0LHpfu63mr9fS07rqXgaCIxG/JbiWfrv1QV6jAYrUPlQUWwL9z7+YQhy/l2bxGiW2QxlPmiWqjqZn3F+fOBUTHIeP5/BBKteHnQd7TvvMCV2vnIeckLUuXRF/hrG1kXn6v8r2FZzj4vIN0FZlDVZHHQpEVR6EhYNaeeLtSsSVp0kW0Ebt5cqKfGhW/I8L5jR3ZkyBFq03y3Z8qQ2d5chEERBg4Hf72+pZVSLmJ4T1KDtTIATfHlGBxghLiHEdlOLjhGtk4hQPaZlb+DB3eCOUJAjs7VrCYUAmofEgjLqOSmQ+7M48WmQ48a3F3BPEqpG3CpiqZcKzKkVxeu43MkzyeG+VNK7mPc+Zlgn6jJxQPTCMMw4P2fhJ6qU+cGfbsijUvqOSICWcbgEjlVKEsBWNuPLPrav9ELzQSNwYwYxsO46HqrNCC6kQx4pk1AagOTV22JpNIoSijTZecVJDin/NHqKmT92HizkuYDIHvRCoWnQIoZ1xh5qetuTkSEgnR+Kl/3mQnK4Gu5pHK4sJYBhneOe8N9Q7Q0Tam5yPyQ4uhrt9TOXtgPVXvJ5ZPBJ3TM6lZktWJq8wlViXQDFPjQhd/QcYfUH8nsoPbwBwld3E86
+        </eBayAuthToken>
+    </RequesterCredentials>
+    <WarningLevel>High</WarningLevel>
+</AddItemRequest>
