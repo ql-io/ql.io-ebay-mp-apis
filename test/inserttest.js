@@ -688,6 +688,28 @@ module.exports = {
             }
         });
 
+    },
+    'UploadSiteHostedPictures' :function(test) {
+        var script = 'msg = { \
+                            "WarningLevel" : "High", \
+                            "ExternalPictureURL" : "http://developer.ebay.com/DevZone/XML/docs/images/hp_book_image.jpg",\
+                            "PictureName" : "HarryPotterPic-1", \
+                            "WarningLevel" : "High"\
+                            }\
+                        insert "{msg}" into ebay.trading.UploadSiteHostedPictures'
+
+        engine.exec(script, function (err, list) {
+            if (err) {
+                test.fail('got error: ' + err.stack || err);
+                test.done();
+            }
+            else {
+                test.equals(list.headers['content-type'], 'application/json', 'HTML expected');
+                test.equals(list.body.Ack, 'Success', 'Success expected');
+                test.done();
+            }
+        });
+
     }
 
 
