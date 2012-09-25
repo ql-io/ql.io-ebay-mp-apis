@@ -17,4 +17,21 @@ For more information regarding ql.io please refer http://ql.io/
 
 Incase of specific issues send an email to DL-eBay-qlio-dev <DL-eBay-qlio-dev@corp.ebay.com>
 
+# FAQs
+
+###Are these a replacement for the current eBay Marketplaces APIs?
+This repo can serve as an interface to the eBay Marketplaces APIs. 
+All you need is to plug in the appropriate API keys in config/dev.json.
+
+###Can these tables be used as is?
+Yes.
+These tables can be used as they are. 
+
+###Can the tables be customized?
+Yes.
+In some cases where you need specific fields from the API results, it is better to customize the tables as per your requirement.
+
+
+
+
 
