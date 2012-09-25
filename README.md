@@ -31,6 +31,11 @@ These tables can be used as they are.
 Yes.
 In some cases where you need specific fields from the API results, it is better to customize the tables as per your requirement.
 
+###What eBay API calls are supported?
+We support most of the Trading, Finding and Shopping API calls.
+
+###I have more questions, what should I do?
+You can send an email to https://groups.google.com/forum/?fromgroups#!forum/qlio  
 
 
 
