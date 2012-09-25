@@ -2,7 +2,7 @@
     "name": "ql.io-ebay-mp-apis",
     "version": "0.1.0",
     "dependencies":{
-        "ql.io-app": "< 0.8.0",
+        "ql.io-app": ">0.8.0",
         "ql.io-compiler": "",
         "mustache": "",
         "headers": "",
