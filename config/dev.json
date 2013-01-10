@@ -4,7 +4,17 @@
         "ebay": {
             "finding" : {
                 "gateway": "http://svcs.ebay.com/services/search/FindingService/v1",
-                "appname": "YOUR APP NAME HERE"
+                "appname": "YOUR APP NAME HERE",
+                getHistograms: {
+                    url: "http://svcs.ebay.com/services/search/FindingService/v1?OPERATION-NAME=getHistograms&SECURITY-APPNAME={apikey}&RESPONSE-DATA-FORMAT={format}&categoryId={categoryId}"
+                },
+                getSearchKeywordsRecommendation: {
+                    url: "http://svcs.ebay.com/services/search/FindingService/v1?OPERATION-NAME=getSearchKeywordsRecommendation&SERVICE-VERSION=1.11.0&SECURITY-APPNAME={apikey}&RESPONSE-DATA-FORMAT=XML&REST-PAYLOAD&keywords={keywords}"
+                },
+                getVersion: {
+                    url: "http://svcs.ebay.com/services/search/FindingService/v1?OPERATION-NAME=getVersion&RESPONSE-DATA-FORMAT={format}",
+                    note: "Config for ebay.finding.getVersion"
+                }
             },
             "shopping" :
             {   "gateway": "http://open.api.ebay.com/shopping?",
