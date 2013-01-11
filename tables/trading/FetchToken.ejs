@@ -118,7 +118,6 @@ function printTagTree(tagName, children, attrs){
 
 <?xml version="1.0" encoding="utf-8"?>
 <FetchTokenRequest xmlns="urn:ebay:apis:eBLBaseComponents"><%
-    printTagTree('RequesterCredentials', [tagNode('eBayAuthToken', params['RequesterCredentials.eBayAuthToken'])])
     printTagNode('ErrorLanguage', params.ErrorLanguage)
     printTagNode('MessageID', params.MessageID)
     printTagNode('Version', params.Version)
